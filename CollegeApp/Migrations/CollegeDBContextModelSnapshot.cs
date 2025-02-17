@@ -32,22 +32,25 @@ namespace WebAPI_Learning.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("StudentName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
 
                     b.HasData(
                         new
@@ -90,6 +93,21 @@ namespace WebAPI_Learning.Migrations
                             Email = "rosy@gmail.com",
                             StudentName = "Rosy"
                         });
+                });
+
+            modelBuilder.Entity("WebAPI_Learning.Data.config.testModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("int");
+
+                    b.ToTable("TestModels");
                 });
 #pragma warning restore 612, 618
         }

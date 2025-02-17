@@ -1,5 +1,7 @@
 ﻿using CollegeApp.Models;
 using Microsoft.EntityFrameworkCore;
+using WebAPI_Learning.Data.config;
+
 
 namespace WebAPI_Learning.Data
 {
@@ -11,13 +13,13 @@ namespace WebAPI_Learning.Data
 
         }
 
-        DbSet<Student> Students { get; set; }
+        public DbSet<Student> Students { get; set; }
 
 
         //to add default data using overriding the model while migration 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // to add default data
+            /*// to add default data
             modelBuilder.Entity<Student>().HasData(new List<Student>()
             {
                 new Student{Id = 1, StudentName = "Janvi", Address = "Kapsi", Email = "janvi@gmail.com", DOB = new DateTime(2004,06,06)},
@@ -26,7 +28,19 @@ namespace WebAPI_Learning.Data
                 new Student{Id = 4, StudentName = "Lisa", Address = "Bhandara", Email = "lisa@gmail.com", DOB = new DateTime(2005,06,06)},
                 new Student{Id = 5, StudentName = "Rosy", Address = "Bhandara", Email = "rosy@gmail.com", DOB = new DateTime(2005,06,06)},
             });
-        }
 
+            //to add default validation
+            modelBuilder.Entity<Student>(entity =>
+            {               
+                entity.Property(e => e.StudentName).IsRequired();
+                entity.Property(e => e.StudentName).HasMaxLength(250);
+                entity.Property(entity => entity.Address).IsRequired(false).HasMaxLength(500);
+                entity.Property(entity => entity.Email).IsRequired().HasMaxLength(250);
+            });*/
+
+            modelBuilder.ApplyConfiguration(new StudentConfig());
+        }
+        
     }
 }
+
