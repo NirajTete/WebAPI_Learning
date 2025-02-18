@@ -17,8 +17,12 @@ namespace WebAPI_Learning.Config
             // To Ignore Specific prop   NOTE: before ReverseMap() it Map StudentDTO -> Student and after it Map StudentDTO <- Student
             //CreateMap<StudentDTO , Student>().ReverseMap().ForMember(n => n.StudentName, opt => opt.Ignore()); // It will map both StudentDTO <-> Student
 
-            // To transform the null value 
+            // To transform the null value in any feilds it will give "No address found" mean it works on class level
             //CreateMap<StudentDTO , Student>().ReverseMap().AddTransform<string>(n => string.IsNullOrEmpty(n) ? "No address found" : n); // It will map both StudentDTO <-> Student
+
+            // To transform the null value in only for address feild it will give "No address found" mean it works on prop level
+            //CreateMap<StudentDTO, Student>().ReverseMap().ForMember(n => n.Address, opt => opt.MapFrom(n => string.IsNullOrEmpty(n.Address) ? "No address found" : n.Address));
+
 
             CreateMap<StudentDTO, Student>().ReverseMap();
         }
