@@ -1,8 +1,7 @@
 
 using CollegeApp.MyLogging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Serilog;
+using WebAPI_Learning.Config;
 using WebAPI_Learning.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +38,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IMyLogger, LogToServerMemory>();
+
+//Auto Mapper service register
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 var app = builder.Build();
 

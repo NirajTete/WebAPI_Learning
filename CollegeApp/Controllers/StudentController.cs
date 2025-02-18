@@ -1,4 +1,5 @@
-﻿using CollegeApp.Models;
+﻿using AutoMapper;
+using CollegeApp.Models;
 using CollegeApp.MyLogging;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace CollegeApp.Controllers
     {
         private readonly ILogger<StudentController> _logger;
         private readonly CollegeDBContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public StudentController(ILogger<StudentController> logger, CollegeDBContext dbContext)
+        public StudentController(ILogger<StudentController> logger, CollegeDBContext dbContext, IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _mapper = mapper;
         }
         [HttpGet]
         [Route("All", Name = "GetAllStudents")]
@@ -29,18 +32,20 @@ namespace CollegeApp.Controllers
 
             var students = await _dbContext.Students.ToListAsync();
 
-            //// DTO is use to show the specific data
-            //var students = await _dbContext.Students.Select(s => new StudentDTO()
-            //{
-            //    Id = s.Id,
-            //    StudentName = s.StudentName,
-            //    Address = s.Address,
-            //    Email = s.Email,
-            //    DOB = s.DOB
-            //}).ToListAsync();
+            var studentDTOData = _mapper.Map<List<StudentDTO>>(students); // _mapper.Map<Destination>(Source); 
+
+            /* // DTO is use to show the specific data
+             var students = await _dbContext.Students.Select(s => new StudentDTO()
+             {
+                 Id = s.Id,
+                 StudentName = s.StudentName,
+                 Address = s.Address,
+                 Email = s.Email,
+                 DOB = s.DOB
+             }).ToListAsync();*/
 
             //OK - 200 - Success
-            return Ok(students);
+            return Ok(studentDTOData);
         }
 
         [HttpGet]
@@ -66,7 +71,9 @@ namespace CollegeApp.Controllers
                 return NotFound($"The student with id {id} not found");
             }
 
-            // DTO is use to show the specific data
+            var studemtDTO = _mapper.Map<StudentDTO>(student);
+
+            /*// DTO is use to show the specific data
             var studentDTO = new StudentDTO
             {
                 Id = student.Id,
@@ -74,11 +81,11 @@ namespace CollegeApp.Controllers
                 Email = student.Email,
                 Address = student.Address,
                 DOB = student.DOB
-            };
+            };*/
 
 
             //OK - 200 - Success
-            return Ok(studentDTO);
+            return Ok(studemtDTO);
         }
 
         [HttpGet("{name:alpha}", Name = "GetStudentByName")]
@@ -96,14 +103,19 @@ namespace CollegeApp.Controllers
             //NotFound - 404 - NotFound - Client error
             if (student == null)
                 return NotFound($"The student with name {name} not found");
-            var studentDTO = new StudentDTO
+
+            var studentDTO = _mapper.Map<StudentDTO>(student);
+
+            /*var studentDTO = new StudentDTO
             {
                 Id = student.Id,
                 StudentName = student.StudentName,
                 Email = student.Email,
                 Address = student.Address,
                 DOB = student.DOB
-            };
+            };*/
+
+
             //OK - 200 - Success
             return Ok(studentDTO);
         }
@@ -132,16 +144,16 @@ namespace CollegeApp.Controllers
 
             //int newId = _dbContext.Students.LastOrDefault().Id + 1;
 
+            Student student = _mapper.Map<Student>(model);
 
-
-            Student student = new Student
+           /* Student student = new Student
             {
                 //Id = newId,
                 StudentName = model.StudentName,
                 Address = model.Address,
                 Email = model.Email,
                 DOB = model.DOB
-            };
+            };*/
             await _dbContext.Students.AddAsync(student);
             await _dbContext.SaveChangesAsync();
 
@@ -169,14 +181,16 @@ namespace CollegeApp.Controllers
             if (existingStudent == null)
                 return NotFound();
 
-            var newRecord = new Student()
+            var newRecord = _mapper.Map<Student>(model);
+
+           /* var newRecord = new Student()
             {
                 Id = existingStudent.Id,
                 StudentName = model.StudentName,
                 Email = model.Email,
                 Address = model.Address,
                 DOB = model.DOB
-            };
+            };*/
            
             /* existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
@@ -201,29 +215,33 @@ namespace CollegeApp.Controllers
             if (patchDocument == null || id <= 0)
                 BadRequest();
 
-            var existingStudent = await _dbContext.Students.Where(s => s.Id == id).FirstOrDefaultAsync();
+            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == id).FirstOrDefaultAsync();
 
             if (existingStudent == null)
                 return NotFound();
 
-            var studentDTO = new StudentDTO
+            var studentDTO = _mapper.Map<StudentDTO>(existingStudent);
+
+          /*  var studentDTO = new StudentDTO
             {
                 Id = existingStudent.Id,
                 StudentName = existingStudent.StudentName,
                 Email = existingStudent.Email,
                 Address = existingStudent.Address,
                 DOB = existingStudent.DOB
-            };
+            };*/
 
             patchDocument.ApplyTo(studentDTO, ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            existingStudent.StudentName = studentDTO.StudentName;
+            existingStudent = _mapper.Map<Student>(studentDTO);
+
+           /* existingStudent.StudentName = studentDTO.StudentName;
             existingStudent.Email = studentDTO.Email;
             existingStudent.Address = studentDTO.Address;
-            existingStudent.DOB = studentDTO.DOB;
+            existingStudent.DOB = studentDTO.DOB;*/
 
             _dbContext.Update(existingStudent);
             await _dbContext.SaveChangesAsync();
