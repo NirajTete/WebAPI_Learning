@@ -1,0 +1,4 @@
+2025-02-18 10:32:57,360 DEBUG Microsoft.EntityFrameworkCore.Infrastructure.? [?] - MESSAGE: 'CollegeDBContext' disposed.
+ 2025-02-18 10:32:57,368 DEBUG Microsoft.EntityFrameworkCore.Database.Connection.? [?] - MESSAGE: Disposing connection to database 'CollegeDB' on server '192.168.10.210'.
+ 2025-02-18 10:32:57,372 DEBUG Microsoft.EntityFrameworkCore.Database.Connection.? [?] - MESSAGE: Disposed connection to database '' on server '' (4ms).
+ 

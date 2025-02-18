@@ -1,0 +1,18 @@
+2025-02-18 10:32:56,827 DEBUG Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: Compiling query expression: 
+'DbSet<Student>()'
+ 2025-02-18 10:32:56,917 DEBUG Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Student>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.QueryExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: Student.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Student.Address (string) Required MaxLength(500), 1], [Property: Student.DOB (DateTime) Required, 2], [Property: Student.Email (string) Required MaxLength(250), 3], [Property: Student.StudentName (string) Required MaxLength(250), 4] }
+        SELECT s.Id, s.Address, s.DOB, s.Email, s.StudentName
+        FROM Students AS s), 
+    null, 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Student>, 
+    WebAPI_Learning.Data.CollegeDBContext, 
+    False, 
+    False, 
+    True
+)'
+ 

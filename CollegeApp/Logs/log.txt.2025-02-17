@@ -1,0 +1,7 @@
+2025-02-17 17:32:08,673 DEBUG Microsoft.EntityFrameworkCore.Update.? [?] - MESSAGE: SaveChanges completed for 'CollegeDBContext' with 1 entities written to the database.
+ 2025-02-17 17:32:08,678 DEBUG Microsoft.EntityFrameworkCore.Infrastructure.? [?] - MESSAGE: 'CollegeDBContext' disposed.
+ 2025-02-17 17:32:08,682 DEBUG Microsoft.EntityFrameworkCore.Database.Connection.? [?] - MESSAGE: Disposing connection to database 'CollegeDB' on server '192.168.10.210'.
+ 2025-02-17 17:32:08,684 DEBUG Microsoft.EntityFrameworkCore.Database.Connection.? [?] - MESSAGE: Disposed connection to database '' on server '' (2ms).
+ 2025-02-17 17:36:17,938 DEBUG Microsoft.WebTools.BrowserLink.Net.BrowserLinkMiddleware.? [?] - MESSAGE: Response markup is scheduled to include Browser Link script injection.
+ 2025-02-17 17:36:17,942 DEBUG Microsoft.WebTools.BrowserLink.Net.BrowserLinkMiddleware.? [?] - MESSAGE: Response markup was updated to include Browser Link script injection.
+ 

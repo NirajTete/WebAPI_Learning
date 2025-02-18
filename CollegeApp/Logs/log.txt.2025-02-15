@@ -1,0 +1,4 @@
+2025-02-15 16:55:24,466 DEBUG Microsoft.WebTools.BrowserLink.Net.BrowserLinkMiddleware.? [?] - MESSAGE: Response markup is scheduled to include Browser Link script injection.
+ 2025-02-15 16:55:24,479 DEBUG Microsoft.WebTools.BrowserLink.Net.BrowserLinkMiddleware.? [?] - MESSAGE: Response markup was updated to include Browser Link script injection.
+ 2025-02-15 16:55:34,845  INFO CollegeApp.Controllers.StudentController.GetStudents [23] - MESSAGE: GetStudents method started
+ 

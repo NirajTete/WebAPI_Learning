@@ -3,6 +3,8 @@ using CollegeApp.MyLogging;
 using Microsoft.EntityFrameworkCore;
 using WebAPI_Learning.Config;
 using WebAPI_Learning.Data;
+using WebAPI_Learning.Repository.Implementation;
+using WebAPI_Learning.Repository.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -38,6 +40,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IMyLogger, LogToServerMemory>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped(typeof(ICollegeRepository<>), typeof(CollegeRepository<>));
 
 //Auto Mapper service register
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));

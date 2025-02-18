@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using CollegeApp.Models;
-using CollegeApp.MyLogging;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebAPI_Learning.Data;
+using WebAPI_Learning.Repository.Implementation;
 
 namespace CollegeApp.Controllers
 {
@@ -13,13 +12,18 @@ namespace CollegeApp.Controllers
     public class StudentController : ControllerBase
     {
         private readonly ILogger<StudentController> _logger;
-        private readonly CollegeDBContext _dbContext;
         private readonly IMapper _mapper;
+        //// For individual repo
+        //private readonly IStudentRepository _studentRepository;
 
-        public StudentController(ILogger<StudentController> logger, CollegeDBContext dbContext, IMapper mapper)
+        // For Generic repo 
+        private readonly ICollegeRepository<Student> _studentRepository;
+
+
+        public StudentController(ILogger<StudentController> logger, IMapper mapper, ICollegeRepository<Student> studentRepository)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _studentRepository = studentRepository;
             _mapper = mapper;
         }
         [HttpGet]
@@ -30,7 +34,10 @@ namespace CollegeApp.Controllers
         {
             _logger.LogInformation("GetStudents method started");
 
-            var students = await _dbContext.Students.ToListAsync();
+            ////Without Repository 
+            //var students = await _dbContext.Students.ToListAsync();
+
+            var students = await _studentRepository.GetAll();
 
             var studentDTOData = _mapper.Map<List<StudentDTO>>(students); // _mapper.Map<Destination>(Source); 
 
@@ -62,8 +69,10 @@ namespace CollegeApp.Controllers
                 _logger.LogWarning("Bad Request");
                 return BadRequest();
             }
+            ////Without Repository 
+            //var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
 
-            var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
+            var student = await _studentRepository.GetById(student => student.Id == id);
             //NotFound - 404 - NotFound - Client error
             if (student == null)
             {
@@ -99,7 +108,11 @@ namespace CollegeApp.Controllers
             if (string.IsNullOrEmpty(name))
                 return BadRequest();
 
-            var student = await _dbContext.Students.Where(n => n.StudentName == name).FirstOrDefaultAsync();
+            ////Without Repository
+            //var student = await _dbContext.Students.Where(n => n.StudentName == name).FirstOrDefaultAsync();
+
+            var student = await _studentRepository.GetByName(student => student.StudentName.ToLower().Contains(name.ToLower()));
+
             //NotFound - 404 - NotFound - Client error
             if (student == null)
                 return NotFound($"The student with name {name} not found");
@@ -146,16 +159,20 @@ namespace CollegeApp.Controllers
 
             Student student = _mapper.Map<Student>(model);
 
-           /* Student student = new Student
-            {
-                //Id = newId,
-                StudentName = model.StudentName,
-                Address = model.Address,
-                Email = model.Email,
-                DOB = model.DOB
-            };*/
-            await _dbContext.Students.AddAsync(student);
-            await _dbContext.SaveChangesAsync();
+            /* Student student = new Student
+             {
+                 //Id = newId,
+                 StudentName = model.StudentName,
+                 Address = model.Address,
+                 Email = model.Email,
+                 DOB = model.DOB
+             };*/
+
+            await _studentRepository.Create(student);
+
+            ////this are DB Operation already perform in repository
+            //await _dbContext.Students.AddAsync(student);
+            //await _dbContext.SaveChangesAsync();
 
             model.Id = student.Id;
             //Status - 201
@@ -176,29 +193,35 @@ namespace CollegeApp.Controllers
             if (model == null || model.Id <= 0)
                 BadRequest();
 
-            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == model.Id).FirstOrDefaultAsync();
+            ////Without Repository
+            //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == model.Id).FirstOrDefaultAsync();
+
+            var existingStudent = await _studentRepository.GetById(student => student.Id == model.Id, true);
 
             if (existingStudent == null)
                 return NotFound();
 
             var newRecord = _mapper.Map<Student>(model);
 
-           /* var newRecord = new Student()
-            {
-                Id = existingStudent.Id,
-                StudentName = model.StudentName,
-                Email = model.Email,
-                Address = model.Address,
-                DOB = model.DOB
-            };*/
-           
+            /* var newRecord = new Student()
+             {
+                 Id = existingStudent.Id,
+                 StudentName = model.StudentName,
+                 Email = model.Email,
+                 Address = model.Address,
+                 DOB = model.DOB
+             };*/
+
             /* existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
             existingStudent.DOB = model.DOB;*/
 
-            _dbContext.Students.Update(newRecord);
-            await _dbContext.SaveChangesAsync();
+            await _studentRepository.Update(newRecord);
+
+            ////this are DB Operation already perform in repository
+            //_dbContext.Students.Update(newRecord);
+            //await _dbContext.SaveChangesAsync();
 
             return NoContent();
         }
@@ -214,22 +237,25 @@ namespace CollegeApp.Controllers
         {
             if (patchDocument == null || id <= 0)
                 BadRequest();
+            ////Without Repository
+            //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == id).FirstOrDefaultAsync();
 
-            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == id).FirstOrDefaultAsync();
+
+            var existingStudent = await _studentRepository.GetById(student => student.Id == id, true);
 
             if (existingStudent == null)
                 return NotFound();
 
             var studentDTO = _mapper.Map<StudentDTO>(existingStudent);
 
-          /*  var studentDTO = new StudentDTO
-            {
-                Id = existingStudent.Id,
-                StudentName = existingStudent.StudentName,
-                Email = existingStudent.Email,
-                Address = existingStudent.Address,
-                DOB = existingStudent.DOB
-            };*/
+            /*  var studentDTO = new StudentDTO
+              {
+                  Id = existingStudent.Id,
+                  StudentName = existingStudent.StudentName,
+                  Email = existingStudent.Email,
+                  Address = existingStudent.Address,
+                  DOB = existingStudent.DOB
+              };*/
 
             patchDocument.ApplyTo(studentDTO, ModelState);
 
@@ -238,13 +264,16 @@ namespace CollegeApp.Controllers
 
             existingStudent = _mapper.Map<Student>(studentDTO);
 
-           /* existingStudent.StudentName = studentDTO.StudentName;
-            existingStudent.Email = studentDTO.Email;
-            existingStudent.Address = studentDTO.Address;
-            existingStudent.DOB = studentDTO.DOB;*/
+            /* existingStudent.StudentName = studentDTO.StudentName;
+             existingStudent.Email = studentDTO.Email;
+             existingStudent.Address = studentDTO.Address;
+             existingStudent.DOB = studentDTO.DOB;*/
 
-            _dbContext.Update(existingStudent);
-            await _dbContext.SaveChangesAsync();
+            await _studentRepository.Update(existingStudent);
+
+            ////this are DB Operation already perform in repository
+            //_dbContext.Update(existingStudent);
+            //await _dbContext.SaveChangesAsync();
 
             //204 - NoContent
             return NoContent();
@@ -263,13 +292,18 @@ namespace CollegeApp.Controllers
             if (id <= 0)
                 return BadRequest();
 
-            var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
+            ////Without Repository 
+            //var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
+            var student = await _studentRepository.GetById(student => student.Id == id);
             //NotFound - 404 - NotFound - Client error
             if (student == null)
                 return NotFound($"The student with id {id} not found");
 
-            _dbContext.Students.Remove(student);
-            await _dbContext.SaveChangesAsync();
+            await _studentRepository.Delete(student);
+
+            ////this are DB Operation already perform in repository
+            //_dbContext.Students.Remove(student);
+            //await _dbContext.SaveChangesAsync();
 
             //OK - 200 - Success
             return Ok(true);
