@@ -8,9 +8,9 @@ namespace WebAPI_Learning.Repository.Implementation
 
         Task<List<T>> GetAll();
 
-        Task<T> GetById(Expression<Func<T, bool>> filter, bool useNoTracking = false);
+        Task<T> GetByPara(Expression<Func<T, bool>> filter, bool useNoTracking = false);
 
-        Task<T> GetByName(Expression<Func<T, bool>> filter);
+        //Task<T> GetByName(Expression<Func<T, bool>> filter);
 
         Task<T> Create(T dbRecord);
 

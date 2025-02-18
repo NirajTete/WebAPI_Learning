@@ -16,11 +16,13 @@ namespace CollegeApp.Controllers
         //// For individual repo
         //private readonly IStudentRepository _studentRepository;
 
-        // For Generic repo 
-        private readonly ICollegeRepository<Student> _studentRepository;
+        //// For Generic repo 
+        //private readonly ICollegeRepository<Student> _studentRepository;
 
+        //// As we inherit college repo in student repo
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentController(ILogger<StudentController> logger, IMapper mapper, ICollegeRepository<Student> studentRepository)
+        public StudentController(ILogger<StudentController> logger, IMapper mapper, IStudentRepository studentRepository)
         {
             _logger = logger;
             _studentRepository = studentRepository;
@@ -72,7 +74,7 @@ namespace CollegeApp.Controllers
             ////Without Repository 
             //var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
 
-            var student = await _studentRepository.GetById(student => student.Id == id);
+            var student = await _studentRepository.GetByPara(student => student.Id == id);
             //NotFound - 404 - NotFound - Client error
             if (student == null)
             {
@@ -111,7 +113,7 @@ namespace CollegeApp.Controllers
             ////Without Repository
             //var student = await _dbContext.Students.Where(n => n.StudentName == name).FirstOrDefaultAsync();
 
-            var student = await _studentRepository.GetByName(student => student.StudentName.ToLower().Contains(name.ToLower()));
+            var student = await _studentRepository.GetByPara(student => student.StudentName.ToLower().Contains(name.ToLower()));
 
             //NotFound - 404 - NotFound - Client error
             if (student == null)
@@ -196,7 +198,7 @@ namespace CollegeApp.Controllers
             ////Without Repository
             //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == model.Id).FirstOrDefaultAsync();
 
-            var existingStudent = await _studentRepository.GetById(student => student.Id == model.Id, true);
+            var existingStudent = await _studentRepository.GetByPara(student => student.Id == model.Id, true);
 
             if (existingStudent == null)
                 return NotFound();
@@ -241,7 +243,7 @@ namespace CollegeApp.Controllers
             //var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == id).FirstOrDefaultAsync();
 
 
-            var existingStudent = await _studentRepository.GetById(student => student.Id == id, true);
+            var existingStudent = await _studentRepository.GetByPara(student => student.Id == id, true);
 
             if (existingStudent == null)
                 return NotFound();
@@ -294,7 +296,7 @@ namespace CollegeApp.Controllers
 
             ////Without Repository 
             //var student = await _dbContext.Students.Where(n => n.Id == id).FirstOrDefaultAsync();
-            var student = await _studentRepository.GetById(student => student.Id == id);
+            var student = await _studentRepository.GetByPara(student => student.Id == id);
             //NotFound - 404 - NotFound - Client error
             if (student == null)
                 return NotFound($"The student with id {id} not found");

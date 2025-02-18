@@ -2,18 +2,8 @@
 
 namespace WebAPI_Learning.Repository.Implementation
 {
-    public interface IStudentRepository
+    public interface IStudentRepository : ICollegeRepository<Student>
     {
-        Task<List<Student>> GetAll();
-
-        Task<Student> GetById(int id, bool useNoTracking = false);
-
-        Task<Student> GetByName(string name);
-
-        Task<int> Create(Student student);
-
-        Task<int> Update(Student student);
-
-        Task<bool> Delete(Student student);
+       Task<List<Student>> GetStudentsByFeeStatus(int feeStatus);
     }
 }

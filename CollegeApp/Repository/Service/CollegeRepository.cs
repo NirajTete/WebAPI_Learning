@@ -41,7 +41,7 @@ namespace WebAPI_Learning.Repository.Service
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<T> GetById(Expression<Func<T, bool>> filter, bool useNoTracking = false)
+        public async Task<T> GetByPara(Expression<Func<T, bool>> filter, bool useNoTracking = false)
         {
             if (useNoTracking)
                 return await _dbSet.AsNoTracking().Where(filter).FirstOrDefaultAsync();
@@ -56,10 +56,10 @@ namespace WebAPI_Learning.Repository.Service
 
         }
 
-        public async Task<T> GetByName(Expression<Func<T, bool>> filter)
-        {
-            return await _dbSet.Where(filter).FirstOrDefaultAsync();
-        }
+        /* public async Task<T> GetByName(Expression<Func<T, bool>> filter)
+         {
+             return await _dbSet.Where(filter).FirstOrDefaultAsync();
+         }*/
 
         public async Task<T> Update(T dbRecord)
         {
