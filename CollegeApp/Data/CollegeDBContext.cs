@@ -15,6 +15,8 @@ namespace WebAPI_Learning.Data
 
         public DbSet<Student> Students { get; set; }
 
+        public DbSet<Department> Departments { get; set; }
+
 
         //to add default data using overriding the model while migration 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +41,7 @@ namespace WebAPI_Learning.Data
             });*/
 
             modelBuilder.ApplyConfiguration(new StudentConfig());
+            modelBuilder.ApplyConfiguration(new DepartmentConfig());
         }
         
     }

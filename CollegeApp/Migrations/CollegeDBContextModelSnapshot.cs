@@ -22,6 +22,60 @@ namespace WebAPI_Learning.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("WebAPI_Learning.Data.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DepartmentName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departments", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DepartmentName = "OT",
+                            Description = "Operation Theater Technician"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DepartmentName = "School",
+                            Description = "NA"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DepartmentName = "Haldirams",
+                            Description = "Kapsi Plant"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DepartmentName = "GNM",
+                            Description = "Bhandara College"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DepartmentName = "Singer",
+                            Description = "Black Pink"
+                        });
+                });
+
             modelBuilder.Entity("WebAPI_Learning.Data.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -38,6 +92,9 @@ namespace WebAPI_Learning.Migrations
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -49,6 +106,8 @@ namespace WebAPI_Learning.Migrations
                         .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Students", (string)null);
 
@@ -95,19 +154,19 @@ namespace WebAPI_Learning.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WebAPI_Learning.Data.config.testModel", b =>
+            modelBuilder.Entity("WebAPI_Learning.Data.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.HasOne("WebAPI_Learning.Data.Department", "Department")
+                        .WithMany("Students")
+                        .HasForeignKey("DepartmentId")
+                        .HasConstraintName("FK_Student_Department");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Navigation("Department");
+                });
 
-                    b.Property<int>("SrNo")
-                        .HasColumnType("int");
-
-                    b.ToTable("TestModels");
+            modelBuilder.Entity("WebAPI_Learning.Data.Department", b =>
+                {
+                    b.Navigation("Students");
                 });
 #pragma warning restore 612, 618
         }

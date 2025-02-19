@@ -24,6 +24,8 @@ namespace WebAPI_Learning.Data.config
                 new Student{Id = 4, StudentName = "Lisa", Address = "Bhandara", Email = "lisa@gmail.com", DOB = new DateTime(2005,06,06)},
                 new Student{Id = 5, StudentName = "Rosy", Address = "Bhandara", Email = "rosy@gmail.com", DOB = new DateTime(2005,06,06)},
             });
+
+            builder.HasOne(n => n.Department).WithMany(n => n.Students).HasForeignKey(n => n.DepartmentId).HasConstraintName("FK_Student_Department");
         }
     }
 }
