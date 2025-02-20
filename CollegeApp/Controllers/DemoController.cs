@@ -1,10 +1,14 @@
 ﻿using CollegeApp.MyLogging;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollegeApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowOnlyGoogle")]
+    //[Authorize(AuthenticationSchemes = "JWTforGoogle", Roles ="Admin")]
     public class DemoController : ControllerBase
     {
         private readonly ILogger<DemoController> _logger;
@@ -12,6 +16,8 @@ namespace CollegeApp.Controllers
         {
             _logger = logger;
         }
+
+        [DisableCors] // It will disable the CORS for this method
         [HttpGet]
         public ActionResult Index()
         {
