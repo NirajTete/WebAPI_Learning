@@ -47,24 +47,23 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using bearer schem. enter Bearer [space] add your token in the text input. eg : Bearer srtert#$FEfsds",
+        Description = "Enter your JWT token.",
         Name = "Authorization",
         In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer"
     });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
                 Reference = new OpenApiReference
                 {
-                    Id = "Bearer",
-                    Type = ReferenceType.SecurityScheme
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
             },
             new List<string>()
         }
@@ -115,36 +114,43 @@ builder.Services.AddCors(options =>
 });
 
 //JWT Authentication Configuration
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecret"));
+var jwtSecret = builder.Configuration["JWTSecret"];
+var key = Encoding.UTF8.GetBytes(jwtSecret);
+var issuer = builder.Configuration["Issuer"]; // Ensure key name matches token generation
+var audience = builder.Configuration["Audience"];
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    //options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters()
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-    };
-})/* For add new JWT again check Demo Controller
-  .AddJwtBearer("JWTforGoogle", options =>
-{
-    //options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters()
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+
+            ValidateAudience = true,
+            ValidAudience = audience,
+
+            ClockSkew = TimeSpan.FromMinutes(5)
+        };
+    });
+/* For add new "Named" JWT again check Demo Controller
+      .AddJwtBearer("JWTforGoogle", options =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-    };
-})*/;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+        };
+    })*/
+;
+
 
 var app = builder.Build();
 
@@ -159,6 +165,8 @@ app.UseHttpsRedirection();
 
 //Use CORS
 app.UseCors();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

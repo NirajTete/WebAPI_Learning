@@ -27,37 +27,47 @@ namespace WebAPI_Learning.Controllers
         public ActionResult Login(LoginDTO model)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Please Enter username and password");
+                return BadRequest("Please enter username and password");
 
-            LoginResponseDTO response = new() { UserName = model.UserName };
+            if (model.UserName != "admin" || model.Password != "admin")
+                return BadRequest("Invalid username or password");
 
-            if(model.UserName == "admin" &&  model.Password == "admin")
-            {
-                var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecret"));
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenDescriptor = new SecurityTokenDescriptor()
-                {
-                    Subject = new System.Security.Claims.ClaimsIdentity(new Claim[]
-                    {
-                        //username 
-                        new Claim(ClaimTypes.Name, model.UserName),
-                        new Claim(ClaimTypes.Role, "Admin"),
+            var token = GenerateJwtToken(model.UserName);
 
-                    }),
-                    Expires = DateTime.Now.AddHours(4),
-                    SigningCredentials = new( new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                response.Token = tokenHandler.WriteToken(token);
-            }
-            else
-            {
-                return Ok("Please Enter valid username and Password");
-            }
-
-            return Ok(response);
+            return Ok(new LoginResponseDTO { UserName = model.UserName, Token = token });
         }
+
+        private string GenerateJwtToken(string username)
+        {
+            var secretKey = _configuration.GetValue<string>("JWTSecret");
+            var issuer = _configuration.GetValue<string>("Issuer");
+            var audience = _configuration.GetValue<string>("Audience");
+
+            if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 16)
+                throw new Exception("JWTSecret must be at least 16 characters long");
+
+            var key = Encoding.UTF8.GetBytes(secretKey);
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = issuer,
+                Audience = audience,
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, "Admin"),
+        }),
+                Expires = DateTime.UtcNow.AddHours(4),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+
+
     }
 }
 
