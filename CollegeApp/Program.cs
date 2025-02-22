@@ -161,6 +161,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// TO fix the url
+app.Urls.Add("https://0.0.0.0:7185");
+
 app.UseHttpsRedirection();
 
 //Use CORS
