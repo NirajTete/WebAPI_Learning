@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using WebAPI_Learning.Data;
+using WebAPI_Learning.Models;
 
 namespace WebAPI_Learning.Repository.Implementation
 {
@@ -17,5 +18,6 @@ namespace WebAPI_Learning.Repository.Implementation
         Task<T> Update(T dbRecord);
 
         Task<bool> Delete(T dbRecord);
+     
     }
 }

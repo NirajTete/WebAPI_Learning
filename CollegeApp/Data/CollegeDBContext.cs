@@ -16,6 +16,11 @@ namespace WebAPI_Learning.Data
         public DbSet<Student> Students { get; set; }
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RolePrivilege> RolePrivileges { get; set; }
+        public DbSet<UserRoleMapping> UserRoleMappings { get; set; }
+        public DbSet<UserType> UserTypes { get; set; }
 
 
         //to add default data using overriding the model while migration 
@@ -42,6 +47,7 @@ namespace WebAPI_Learning.Data
 
             modelBuilder.ApplyConfiguration(new StudentConfig());
             modelBuilder.ApplyConfiguration(new DepartmentConfig());
+            modelBuilder.ApplyConfiguration(new UserConfig());
         }
         
     }

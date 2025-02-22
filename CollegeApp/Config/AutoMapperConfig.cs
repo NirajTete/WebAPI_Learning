@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CollegeApp.Models;
 using WebAPI_Learning.Data;
+using WebAPI_Learning.Models;
 
 namespace WebAPI_Learning.Config
 {
@@ -25,6 +26,7 @@ namespace WebAPI_Learning.Config
 
 
             CreateMap<StudentDTO, Student>().ReverseMap();
+            CreateMap<RoleDTO, Role>().ReverseMap();
         }
     }
 }
