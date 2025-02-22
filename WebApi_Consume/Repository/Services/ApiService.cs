@@ -22,11 +22,38 @@ namespace WebApi_Consume.Repository.Services
             return request;
         }
 
-        public async Task<T> GetAsync<T>(string url, string token)
+        private HttpRequestMessage CreateRequest(HttpMethod method, string url, HttpContent? content = null)
+        {
+            var request = new HttpRequestMessage(method, url)
+            {
+                Content = content
+            };
+
+            //request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            return request;
+        }
+
+        //public async Task<T> GetAsync<T>(string url, string token)
+        //{
+        //    try
+        //    {
+        //        var request = CreateRequest(HttpMethod.Get, url, token);
+        //        var response = await _httpClient.SendAsync(request);
+        //        response.EnsureSuccessStatusCode();
+        //        return await response.Content.ReadFromJsonAsync<T>();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+
+        //}
+
+        public async Task<T> GetAsync<T>(string url)
         {
             try
             {
-                var request = CreateRequest(HttpMethod.Get, url, token);
+                var request = CreateRequest(HttpMethod.Get, url);
                 var response = await _httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadFromJsonAsync<T>();
