@@ -7,7 +7,7 @@ namespace WebAPI_Learning.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        public int Id { get; set; }
         [Required]
         [MaxLength(250)]
         public string RolePrivilegeName { get; set; }

@@ -1,43 +1,39 @@
 ﻿using AutoMapper;
-using CollegeApp.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Net;
-using System.Threading.Tasks;
 using WebAPI_Learning.Data;
 using WebAPI_Learning.Models;
 using WebAPI_Learning.Repository.Implementation;
-using WebAPI_Learning.Repository.Service;
 
 namespace WebAPI_Learning.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleAPIController : ControllerBase
+    public class RolePrivilegeAPIController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ICollegeRepository<Role> _roleRepository;
+        private readonly ICollegeRepository<RolePrivilege> _rolePrivilegeRepository;
         private APIResponse _apiResponse;
-        private readonly ILogger<RoleAPIController> _logger;
+        private readonly ILogger<RolePrivilegeAPIController> _logger;
 
-        public RoleAPIController(IMapper mapper, ICollegeRepository<Role> roleRepository, ILogger<RoleAPIController> logger)
+        public RolePrivilegeAPIController(IMapper mapper, ICollegeRepository<RolePrivilege> rolePrivilegeRepository, ILogger<RolePrivilegeAPIController> logger)
         {
             _mapper = mapper;
-            _roleRepository = roleRepository;
+            _rolePrivilegeRepository = rolePrivilegeRepository;
             _apiResponse = new();
             _logger = logger;
         }
 
+
         [HttpGet]
-        [Route("All", Name = "GetAllRoles")]
+        [Route("All", Name = "GetAllRolesPrivilege")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         //[AllowAnonymous]
-        public async Task<ActionResult<APIResponse>> GetAllRoles()
+        public async Task<ActionResult<APIResponse>> GetAllRolesPrivilege()
         {
             try
             {
@@ -45,12 +41,12 @@ namespace WebAPI_Learning.Controllers
                 ////Without Repository 
                 //var students = await _dbContext.Students.ToListAsync();
 
-                var roles = await _roleRepository.GetAll();
+                var rolesPrivilege = await _rolePrivilegeRepository.GetAll();
 
-                if (roles.Count == 0)
+                if (rolesPrivilege.Count == 0)
                     return NotFound("No Data Found");
 
-                _apiResponse.Data = _mapper.Map<List<RoleDTO>>(roles); // _mapper.Map<Destination>(Source); 
+                _apiResponse.Data = _mapper.Map<List<RolePrivilegeDTO>>(rolesPrivilege); // _mapper.Map<Destination>(Source); 
                 _apiResponse.Status = true;
                 _apiResponse.StatusCode = HttpStatusCode.OK;
 
@@ -79,15 +75,16 @@ namespace WebAPI_Learning.Controllers
 
         }
 
+
         [HttpGet]
-        [Route("{id:int}", Name = "GetRoleById")]
+        [Route("{id:int}", Name = "GetRolePrivilegeById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> GetRoleById(int id)
+        public async Task<ActionResult<APIResponse>> GetRolePrivilegeById(int id)
         {
             try
             {
@@ -96,14 +93,14 @@ namespace WebAPI_Learning.Controllers
                     return BadRequest();
                 }
 
-                var role = await _roleRepository.GetByPara(role => role.Id == id);
+                var rolePrivilege = await _rolePrivilegeRepository.GetByPara(rolePrivilege => rolePrivilege.Id == id);
 
-                if (role == null)
+                if (rolePrivilege == null)
                 {
                     return NotFound($"The role with id: {id} is not found");
                 }
 
-                _apiResponse.Data = _mapper.Map<RoleDTO>(role);
+                _apiResponse.Data = _mapper.Map<RolePrivilegeDTO>(rolePrivilege);
                 _apiResponse.Status = true;
                 _apiResponse.StatusCode = HttpStatusCode.OK;
 
@@ -120,14 +117,14 @@ namespace WebAPI_Learning.Controllers
         }
 
         [HttpGet]
-        [Route("{name:alpha}", Name = "GetRoleByName")]
+        [Route("{name:alpha}", Name = "GetRolePrivilegeByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> GetRoleByName(string name)
+        public async Task<ActionResult<APIResponse>> GetRolePrivilegeByName(string name)
         {
             try
             {
@@ -136,14 +133,14 @@ namespace WebAPI_Learning.Controllers
                     return BadRequest();
                 }
 
-                var role = await _roleRepository.GetByPara(role => role.RoleName == name);
+                var rolePrivilege = await _rolePrivilegeRepository.GetByPara(rolePrivilege => rolePrivilege.RolePrivilegeName == name);
 
-                if (role == null)
+                if (rolePrivilege == null)
                 {
                     return NotFound($"The role with id: {name} is not found");
                 }
 
-                _apiResponse.Data = _mapper.Map<RoleDTO>(role);
+                _apiResponse.Data = _mapper.Map<RolePrivilegeDTO>(rolePrivilege);
                 _apiResponse.Status = true;
                 _apiResponse.StatusCode = HttpStatusCode.OK;
 
@@ -166,19 +163,19 @@ namespace WebAPI_Learning.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> CreateRole(RoleDTO model)
+        public async Task<ActionResult<APIResponse>> CreateRole(RolePrivilegeDTO model)
         {
             try
             {
                 if (model == null)
                     return BadRequest();
 
-                Role role = _mapper.Map<Role>(model);
-                role.IsDeleted = false;
-                role.CreatedDate = DateTime.Now;
-                role.ModifiedDate = DateTime.Now;
+                RolePrivilege rolePrivilege = _mapper.Map<RolePrivilege>(model);
+                rolePrivilege.IsDeleted = false;
+                rolePrivilege.CreatedDate = DateTime.Now;
+                rolePrivilege.ModifiedDate = DateTime.Now;
 
-                var result = await _roleRepository.Create(role);
+                var result = await _rolePrivilegeRepository.Create(rolePrivilege);
                 model.Id = result.Id;
 
                 _apiResponse.Status = true;
@@ -186,7 +183,7 @@ namespace WebAPI_Learning.Controllers
                 _apiResponse.StatusCode = HttpStatusCode.OK;
 
                 //return Ok(_apiResponse);
-                return CreatedAtRoute("GetRoleById", new { id = model.Id }, _apiResponse);
+                return CreatedAtRoute("GetRolePrivilegeById", new { id = model.Id }, _apiResponse);
 
             }
             catch (Exception ex)
@@ -214,18 +211,18 @@ namespace WebAPI_Learning.Controllers
                 if (model == null || model.Id == 0)
                     return BadRequest();
 
-                var existingRole = await _roleRepository.GetByPara(role => role.Id == model.Id, true);
+                var existingRolePrivilege = await _rolePrivilegeRepository.GetByPara(rolePrivilege => rolePrivilege.Id == model.Id, true);
 
-                if (existingRole == null)
+                if (existingRolePrivilege == null)
                     return BadRequest($"Role not found with id: {model.Id} to update");
 
-                var newRole = _mapper.Map<Role>(model);
-                newRole.ModifiedDate = DateTime.Now;
+                var newRolePrivilege = _mapper.Map<RolePrivilege>(model);
+                newRolePrivilege.ModifiedDate = DateTime.Now;
 
-                await _roleRepository.Update(newRole);
+                await _rolePrivilegeRepository.Update(newRolePrivilege);
 
                 _apiResponse.Status = true;
-                _apiResponse.Data = newRole;
+                _apiResponse.Data = newRolePrivilege;
                 _apiResponse.StatusCode = HttpStatusCode.OK;
 
                 return Ok(_apiResponse);
@@ -240,7 +237,7 @@ namespace WebAPI_Learning.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{id}", Name = "DeleteById")]
+        [Route("Delete/{id}", Name = "DeletePrivilegeById")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -254,12 +251,12 @@ namespace WebAPI_Learning.Controllers
                 if (id <= 0)
                     return BadRequest();
 
-                var role = await _roleRepository.GetByPara(role => role.Id == id, true);
+                var rolePrivilege = await _rolePrivilegeRepository.GetByPara(rolePrivilege => rolePrivilege.Id == id, true);
 
-                if (role == null)
-                    return BadRequest($"No Role Found with the id: {id}");
+                if (rolePrivilege == null)
+                    return BadRequest($"No Role Privilege Found with the id: {id}");
 
-                await _roleRepository.Delete(role);
+                await _rolePrivilegeRepository.Delete(rolePrivilege);
 
                 _apiResponse.Status = true;
                 _apiResponse.Data = true;
@@ -275,7 +272,6 @@ namespace WebAPI_Learning.Controllers
                 return _apiResponse;
             }
         }
-
 
     }
 }

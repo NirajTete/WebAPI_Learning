@@ -27,6 +27,7 @@ namespace WebAPI_Learning.Config
 
             CreateMap<StudentDTO, Student>().ReverseMap();
             CreateMap<RoleDTO, Role>().ReverseMap();
+            CreateMap<RolePrivilegeDTO, RolePrivilege>().ReverseMap();
         }
     }
 }
