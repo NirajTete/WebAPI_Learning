@@ -3,13 +3,11 @@
 *@
 @{
 }
-
 @model WebAPI_Learning.Models.RoleDTO
-
 
 <div class="page-titles d-flex justify-content-between align-items-center">
     <ol class="breadcrumb mb-0">
-        <li><h5 class="bc-title">Create Role</h5></li>
+        <li><h5 class="bc-title">Edit Role</h5></li>
     </ol>
     <div>
         <a asp-controller="Role" asp-action="Index" class="btn-sm btn-secondary me-2">
@@ -23,7 +21,8 @@
         <div class="card">
             <div class="card-body p-4">
 
-                <form asp-action="Create" id="create-form" method="post">
+                <form asp-action="Edit" id="create-form" method="post">
+                    <input asp-for="Id" class="form-control" hidden/>
                     <div class="row">
                         <!-- Role Name -->
                         <div class="col-sm-4">
@@ -48,7 +47,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-success create-btn mt-2">
-                        <i class="fas fa-plus-circle"></i> Create Role
+                        <i class="fas fa-plus-circle"></i> Update Role
                     </button>
 
                 </form>
@@ -57,32 +56,3 @@
         </div>
     </div>
 </div>
-
-@* @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-
-    <script>
-        $(document).ready(function () {
-            $('.create-btn').click(function (e) {
-                e.preventDefault();
-
-                // Show SweetAlert2 confirmation dialog
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'Do you want to create this country?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, create it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Submit the form if confirmed
-                        $('#create-form').submit();
-                    }
-                });
-            });
-        });
-    </script>
-}
- *@

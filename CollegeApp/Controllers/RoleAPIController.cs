@@ -15,14 +15,14 @@ namespace WebAPI_Learning.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RoleAPIController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly ICollegeRepository<Role> _roleRepository;
         private APIResponse _apiResponse;
-        private readonly ILogger<RoleController> _logger;
+        private readonly ILogger<RoleAPIController> _logger;
 
-        public RoleController(IMapper mapper, ICollegeRepository<Role> roleRepository, ILogger<RoleController> logger)
+        public RoleAPIController(IMapper mapper, ICollegeRepository<Role> roleRepository, ILogger<RoleAPIController> logger)
         {
             _mapper = mapper;
             _roleRepository = roleRepository;
