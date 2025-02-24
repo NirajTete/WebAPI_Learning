@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\01 Niraj\\Web-API-Tutorial\\CollegeApp\\WebAPI_Learning.csproj": {}
+    "D:\\01 Niraj\\WebAPI_Learning\\CollegeApp\\WebAPI_Learning.csproj": {}
   },
   "projects": {
-    "D:\\01 Niraj\\Web-API-Tutorial\\CollegeApp\\WebAPI_Learning.csproj": {
+    "D:\\01 Niraj\\WebAPI_Learning\\CollegeApp\\WebAPI_Learning.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\01 Niraj\\Web-API-Tutorial\\CollegeApp\\WebAPI_Learning.csproj",
+        "projectUniqueName": "D:\\01 Niraj\\WebAPI_Learning\\CollegeApp\\WebAPI_Learning.csproj",
         "projectName": "WebAPI_Learning",
-        "projectPath": "D:\\01 Niraj\\Web-API-Tutorial\\CollegeApp\\WebAPI_Learning.csproj",
+        "projectPath": "D:\\01 Niraj\\WebAPI_Learning\\CollegeApp\\WebAPI_Learning.csproj",
         "packagesPath": "C:\\Users\\Dhiraj\\.nuget\\packages\\",
-        "outputPath": "D:\\01 Niraj\\Web-API-Tutorial\\CollegeApp\\obj\\",
+        "outputPath": "D:\\01 Niraj\\WebAPI_Learning\\CollegeApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

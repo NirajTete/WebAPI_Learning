@@ -8,6 +8,12 @@
 <div class="container mt-4">
 	<h2 class="mb-3">Roles List</h2>
 
+	<div class=" d-flex justify-content-end my-2">
+		<a asp-controller="Role" asp-action="Create" class="btn-sm btn-secondary me-2">
+			<i class="fas fa-arrow-left me-2"></i> Create
+		</a>
+	</div>
+
 	@if (Model != null && Model.Any())
 	{
 		<table class="table table-bordered table-striped">

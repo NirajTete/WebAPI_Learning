@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "API & Base",
+    "Projects": [
+      {
+        "Path": "WebApi_Consume\\WebApi_Consume.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "CollegeApp\\WebAPI_Learning.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
