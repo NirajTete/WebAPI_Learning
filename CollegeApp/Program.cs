@@ -168,7 +168,7 @@ app.UseHttpsRedirection();
 
 //Use CORS
 app.UseCors();
-
+app.MapGet("/", () => "Welcome to the ASP.NET Core Application!");
 app.UseAuthentication();
 
 app.UseAuthorization();
