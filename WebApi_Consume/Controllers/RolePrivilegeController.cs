@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 using WebApi_Consume.Models;
 using WebApi_Consume.Repository.Implementation;
 using WebAPI_Learning.Data;
@@ -9,12 +8,12 @@ using WebAPI_Learning.Models;
 
 namespace WebApi_Consume.Controllers
 {
-    public class RoleController : Controller
+    public class RolePrivilegeController : Controller
     {
         private readonly IApiService _apiService;
         private readonly ApiSettings _apiSettings;
 
-        public RoleController(IApiService apiService, IOptions<ApiSettings> apiSettings)
+        public RolePrivilegeController(IApiService apiService, IOptions<ApiSettings> apiSettings)
         {
             _apiService = apiService;
             _apiSettings = apiSettings.Value;
@@ -27,11 +26,11 @@ namespace WebApi_Consume.Controllers
                 // Retrieve the "Bearer" claim value
                 var bearerToken = User.FindFirst("Bearer")?.Value;
 
-                var url = $"{_apiSettings.BaseUrl}/RoleAPI/All";
+                var url = $"{_apiSettings.BaseUrl}/RolePrivilegeAPI/All";
                 var data = await _apiService.GetAsync<APIResponse>(url, bearerToken);
-                var role = JsonConvert.DeserializeObject<List<RoleDTO>>(data.Data.ToString());
+                var rolePrivilege = JsonConvert.DeserializeObject<List<RolePrivilegeDTO>>(data.Data.ToString());
 
-                return View(role);
+                return View(rolePrivilege);
             }
             catch (Exception)
             {
@@ -47,7 +46,7 @@ namespace WebApi_Consume.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(RoleDTO role)
+        public async Task<IActionResult> Create(RolePrivilegeDTO rolePrivilege)
         {
             try
             {
@@ -56,8 +55,8 @@ namespace WebApi_Consume.Controllers
                     // Retrieve the "Bearer" claim value
                     var bearerToken = User.FindFirst("Bearer")?.Value;
 
-                    var url = $"{_apiSettings.BaseUrl}/RoleAPI/Create";
-                    var data = await _apiService.PostAsync<APIResponse>(url, role, bearerToken);
+                    var url = $"{_apiSettings.BaseUrl}/RolePrivilegeAPI/Create";
+                    var data = await _apiService.PostAsync<APIResponse>(url, rolePrivilege, bearerToken);
 
                     if (data != null && data.Status == true)
                     {
@@ -66,7 +65,7 @@ namespace WebApi_Consume.Controllers
                     }
                 }
 
-                return View(role);
+                return View(rolePrivilege);
             }
             catch (Exception)
             {
@@ -84,41 +83,48 @@ namespace WebApi_Consume.Controllers
 
             // Retrieve the "Bearer" claim value
             var bearerToken = User.FindFirst("Bearer")?.Value;
-            var url = $"{_apiSettings.BaseUrl}/RoleAPI/{id}";
+            var url = $"{_apiSettings.BaseUrl}/RolePrivilegeAPI/{id}";
 
-            var data = await _apiService.GetAsync<APIResponse>(url, bearerToken);     
+            var data = await _apiService.GetAsync<APIResponse>(url, bearerToken);
 
-            if( data == null)
+            if (data == null)
             {
                 Console.WriteLine("No Data Found");
             }
-            var role = JsonConvert.DeserializeObject<RoleDTO>(data.Data.ToString());
+            var rolePrivilege = JsonConvert.DeserializeObject<RolePrivilegeDTO>(data.Data.ToString());
 
-            return View(role);
+            return View(rolePrivilege);
 
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, RoleDTO role)
+        public async Task<IActionResult> Edit(int id, RolePrivilegeDTO rolePrivilege)
         {
             try
             {
-                if (ModelState.IsValid)
+                // Retrieve the "Bearer" claim value    
+                var bearerToken = User.FindFirst("Bearer")?.Value;
+
+                ////Get role name 
+                var url0 = $"{_apiSettings.BaseUrl}/RoleAPI/{rolePrivilege.RoleId}";
+                var result = await _apiService.GetAsync<APIResponse>(url0, bearerToken);
+                var roleData = JsonConvert.DeserializeObject<RoleDTO>(result.Data.ToString());
+
+                // Set Role Name
+                rolePrivilege.RoleName = roleData.RoleName;
+
+
+                var url = $"{_apiSettings.BaseUrl}/RolePrivilegeAPI/Update";
+                var data = await _apiService.PutAsync<APIResponse>(url, rolePrivilege, bearerToken);
+
+                if (data != null && data.Status == true)
                 {
-                    // Retrieve the "Bearer" claim value
-                    var bearerToken = User.FindFirst("Bearer")?.Value;
 
-                    var url = $"{_apiSettings.BaseUrl}/RoleAPI/Update";
-                    var data = await _apiService.PutAsync<APIResponse>(url, role, bearerToken);
-
-                    if (data != null && data.Status == true)
-                    {
-
-                        return RedirectToAction("Index");
-                    }
+                    return RedirectToAction("Index");
                 }
 
-                return View(role);
+
+                return View(rolePrivilege);
             }
             catch (Exception)
             {
@@ -139,7 +145,7 @@ namespace WebApi_Consume.Controllers
                 var bearerToken = User.FindFirst("Bearer")?.Value;
 
                 // Ensure the API URL is correct for deletion
-                var url = $"{_apiSettings.BaseUrl}/RoleAPI/Delete/{id}";
+                var url = $"{_apiSettings.BaseUrl}/RolePrivilegeAPI/Delete/{id}";
                 var data = await _apiService.DeleteAsync<APIResponse>(url, bearerToken);
 
                 if (data != null && data.Status == true)
@@ -155,8 +161,5 @@ namespace WebApi_Consume.Controllers
                 return RedirectToAction("InternalServerError", "Error");
             }
         }
-
-
-
     }
 }

@@ -133,7 +133,7 @@ namespace WebAPI_Learning.Controllers
                     return BadRequest();
                 }
 
-                var rolePrivilege = await _rolePrivilegeRepository.GetByPara(rolePrivilege => rolePrivilege.RolePrivilegeName == name);
+                var rolePrivilege = await _rolePrivilegeRepository.GetByPara(rolePrivilege => rolePrivilege.RolePrivilegeName.Contains(name));
 
                 if (rolePrivilege == null)
                 {
@@ -204,7 +204,7 @@ namespace WebAPI_Learning.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> Update(RoleDTO model)
+        public async Task<ActionResult<APIResponse>> Update(RolePrivilegeDTO model)
         {
             try
             {

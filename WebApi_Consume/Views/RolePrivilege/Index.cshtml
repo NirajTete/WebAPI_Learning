@@ -1,0 +1,62 @@
+﻿
+@model IEnumerable<WebAPI_Learning.Models.RolePrivilegeDTO>
+
+<div class="container mt-4">
+    <h2 class="mb-3">Roles Privilege List</h2>
+
+    <div class=" d-flex justify-content-end my-2">
+        <a asp-controller="RolePrivilege" asp-action="Create" class="btn-sm btn-secondary me-2">
+            <i class="fas fa-arrow-left me-2"></i> Create
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    @* <th class="d-flex justify-content-center">#</th> *@
+                    <th>Role Privilege Name</th>
+                    <th>Description</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th> <!-- New Action Column -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @* <td class="text-center">@item.Id</td> *@
+                        <td>@item.RolePrivilegeName</td>
+                        <td>@item.Description</td>
+                        <td class="text-center">
+                            <span class="badge @(item.IsActive ? "bg-success" : "bg-danger")">
+                                @(item.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a asp-controller="RolePrivilege" asp-action="Edit" asp-route-id="@item.Id" class="btn-sm btn-primary me-2">
+                                <i class="fas fa-arrow-left me-2"></i> Edit
+                            </a>
+                            <a asp-controller="RolePrivilege" asp-action="Delete" asp-route-id="@item.Id" class="btn-sm btn-danger me-2">
+                                <i class="fas fa-arrow-left me-2"></i> Delete
+                            </a>
+                        </td>
+
+
+
+                        @*   <td>
+                            <a asp-action="Details" asp-route-id="@item.ItemId" class="btn btn-primary btn-sm">
+                                Details
+                            </a>
+                        </td> *@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">No items found.</div>
+    }
+</div>
